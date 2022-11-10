@@ -1,0 +1,17 @@
+{
+  "name": "roberio",
+  "version": "1.0.0",
+  "description": "ele é o Roberio",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Robério",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

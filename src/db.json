@@ -1,0 +1,16 @@
+{
+    "teste":  [
+    {
+      "id": 1,
+      "estilo": "Metal",
+      "nome": "Iron Maiden",
+      "musicas": [
+        {
+          "nome": "The Trooper",
+          "endereco": "../musica/iron1.mp3"
+        }
+      ]
+    }
+]
+
+}
