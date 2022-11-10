@@ -206,7 +206,7 @@ server.post('/criarPlay', (req, res) => {
     return res.status(200).json({id, name})
 });
 
-server.get('/usuarios', (req,res)=>{
-    const {nome} = req.query
-    return res.json(nome)
-})
+// server.get('/usuarios', (req,res)=>{
+//     const {nome} = req.query
+//     return res.json(nome)
+// })
