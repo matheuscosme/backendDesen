@@ -187,13 +187,18 @@ server.post('/usuarios', (req, res) => {
 
 server.get('/usuarios', (req,res)=>{
     const {email} = req.query
-    return res.json(email)
+    for (let i = 0; i<Usuarios.length ; i++){
+      if(Usuarios[i].email == email){
+        var usuario = Usuarios[i]
+      }
+    }
+    return res.json(usuario)
 })
 
 server.put('/usuarioEd/:Id', (req,res)=>{
-    const {id} = req.params;
-    const {usuario} = req.body;
-    Usuarios[id] = usuario;
+    var {id} = req.params;
+    id = parseInt(id)
+    Usuarios[id-1] = req.body;
     return res.json(Usuarios);
 })
 
@@ -206,7 +211,13 @@ server.post('/criarPlay', (req, res) => {
     return res.status(200).json({id, name})
 });
 
-// server.get('/usuarios', (req,res)=>{
-//     const {nome} = req.query
-//     return res.json(nome)
-// })
+server.get('/musicas', (req,res)=>{
+    return res.json(musicas)
+})
+
+server.put('/playlistsUser/:id', (req,res)=>{
+  var {id} = req.params;
+  id = parseInt(id)
+  playlistsDeUsuarios[id-1] = req.body;
+  return res.json(playlistsDeUsuarios);
+})
