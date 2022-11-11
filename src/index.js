@@ -108,22 +108,26 @@ const Usuarios = [
     {
         "id": 1,
         "usuario": "roberio",
-        "email": "roberio@unifor"
+        "email": "roberio@unifor",
+        "senha": 123
     },
     {
         "id": 2,
         "usuario": "saulo",
-        "email": "saulo@unifor"
+        "email": "saulo@unifor",
+        "senha": 123
     },
     {
         "id": 3,
         "usuario": "cosme",
-        "email": "cosme@unifor"   
+        "email": "cosme@unifor",
+        "senha": 123
     },
     {
         "id": 4,
         "usuario": "gabriel",
-        "email": "gabriel@unifor"      
+        "email": "gabriel@unifor",
+        "senha": 123      
     }
 ]
 
@@ -195,7 +199,7 @@ server.get('/usuarios', (req,res)=>{
     return res.json(usuario)
 })
 
-server.put('/usuarioEd/:Id', (req,res)=>{
+server.put('/usuarios/:id', (req,res)=>{
     var {id} = req.params;
     id = parseInt(id)
     Usuarios[id-1] = req.body;
@@ -207,13 +211,29 @@ server.listen(8000, function(req,res){
 });
 
 server.post('/criarPlay', (req, res) => {
-    const {id, name} = req.body
-    return res.status(200).json({id, name})
+    const playlist = req.body
+    playlistsDeUsuarios.push(playlist)
+    return res.status(200).json(playlistsDeUsuarios)
 });
 
 server.get('/musicas', (req,res)=>{
+  let array = []
+  const {busca} = req.query
+  for(let i=0;i<musicas.length;i++){
+      if(musicas[i].nome.toLowerCase().indexOf(busca.toLowerCase())>-1){
+          array.push(musicas[i])
+      }
+      else if(musicas[i].artista.toLowerCase().indexOf(busca.toLowerCase())>-1){
+        array.push(musicas[i])
+    }
+  }
+    return res.json(array)
+})
+
+server.get('/TodasAsMusicas', (req,res)=>{
     return res.json(musicas)
 })
+
 
 server.put('/playlistsUser/:id', (req,res)=>{
   var {id} = req.params;
