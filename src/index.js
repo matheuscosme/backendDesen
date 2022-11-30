@@ -1,51 +1,42 @@
-// const express = require('express');
-// const server = express();
-// const MONGO_URL = "mongodb+srv://cosme_tavares:password@cluster0.fr015va.mongodb.net/?retryWrites=true&w=majority"
-// server.use(express.json());
+const cors = require('cors');
+const express = require('express');
+const {ObjectId} = require('mongodb');
+const server = express();
+server.use(express.json());
+server.use(cors());
+const mongoClient = require('mongodb').MongoClient;
 
-const { MongoClient } = require('mongodb');
+const APP_PORT = 8080;
+const APP_HOST = 'localhost';
+const MONGO_HOST = 'mongodb+srv://cosme_tavares:123456M@cluster0.fr015va.mongodb.net/?retryWrites=true&w=majority';
+const MONGO_DB = 'spotify';
+const MONGO_COLLECTION = 'playlists';
 
-async function main(){
-  const uri = "mongodb+srv://cosme_tavares:123456M@cluster0.fr015va.mongodb.net/?retryWrites=true&w=majority";
 
-  const client = new MongoClient(uri);
+server.listen(APP_PORT, APP_HOST);
 
-  //await client.connect();
+server.get('/playlists', (req, res) => {   
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection(MONGO_COLLECTION).find().toArray((err, result) => {
+      if (err) throw err
+      res.send(result);
+    });
+  });
+});
 
-  try{
-    await client.connect();
-
-    await listDatabases(client);
-
-  } catch(e){
-    console.error(e);
-  } finally{
-    await client.close();
-  }
-} 
-
-main().catch(console.error);
-
-async function listDatabases(client){
-  const databasesList = await client.db().admin().listDatabases();
-
-  // console.log("Databases: ");
-  // databasesList.databases.forEach(db => {
-  //   console.log(`- ${db.name}`)
-  // });
-
-  const result = await client.db("spotify").collection("musicas").find().toArray();
-  console.log(result)
-}
-
-// server.get('/playlists', (req, res) => {   
-//     return res.json( playlists );
-// });
-
-// server.get('/playlist/:id', (req,res)=>{
-//     const {id} = req.params
-//     res.json(playlists[id-1])
-// });
+server.get('/playlist/:id', (req,res)=>{
+    const {id} = req.params
+    mongoClient.connect(MONGO_HOST, (err, client) => {
+      if (err) throw err
+      const database = client.db(MONGO_DB);
+      database.collection(MONGO_COLLECTION).findOne({ _id: ObjectId(id) }, (err, result) => {
+        if (err) throw err
+        res.send(result);
+      });
+    });
+});
 
 // server.get('/playlistsUser', (req, res) => {   
 //     return res.json(playlistsDeUsuarios);
@@ -79,9 +70,6 @@ async function listDatabases(client){
 //     return res.json(Usuarios);
 // })
 
-// server.listen(8000, function(req,res){
-//     console.log("Servidor Ligado");
-// });
 
 // server.post('/criarPlay', (req, res) => {
 //     const playlist = req.body
