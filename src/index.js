@@ -61,7 +61,7 @@ server.put('/users/:id', (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    database.collection(COLLECTION_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"usuario" : req.body.usuario , 
+    database.collection(COLLECTION_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"nome" : req.body.usuario , 
                                                                                     "email" : req.body.email ,
                                                                                     "senha" : req.body.senha} }, (err) => {
       if (err) throw err
