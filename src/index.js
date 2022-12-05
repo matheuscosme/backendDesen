@@ -93,6 +93,18 @@ server.get('/playlistsDeUsuarios', (req, res) => {
   });
 });
 
+server.get('/playlistsDeUsuarios/:id', (req,res)=>{
+  const {id} = req.params
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection(COLLECTION_PLAY_USERS).findOne({ _id: ObjectId(id) }, (err, result) => {
+      if (err) throw err
+      res.send(result);
+    });
+  });
+});
+
 server.post('/playlistsDeUsuarios', (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
@@ -106,7 +118,7 @@ server.post('/playlistsDeUsuarios', (req, res) => {
 });
 
 
-server.get('/playlist/:id', (req,res)=>{
+server.get('/playlists/:id', (req,res)=>{
     const {id} = req.params
     mongoClient.connect(MONGO_HOST, (err, client) => {
       if (err) throw err
@@ -158,9 +170,22 @@ server.put('/playlistsDeUsuarios/:id', (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    database.collection(COLLECTION_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"musicas" : req.body.musicas} }, (err) => {
+    database.collection(COLLECTION_PLAY_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"musicas" : req.body.musicas} }, (err) => {
       if (err) throw err
       res.send();
     });
   });
 });
+
+
+// server.patch('/playlistsDeUsuarios/:id', (req, res) => {
+//   const {id} = req.params
+//   mongoClient.connect(MONGO_HOST, (err, client) => {
+//     if (err) throw err
+//     const database = client.db(MONGO_DB);
+//     database.collection(COLLECTION_USERS).replaceOne({ _id: ObjectId(id) }, { $set: {"musicas" : req.body.musicas} }, (err) => {
+//       if (err) throw err
+//       res.send(req.body.musicas);
+//     });
+//   });
+// });
