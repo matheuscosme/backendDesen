@@ -170,7 +170,20 @@ server.put('/playlistsDeUsuarios/:id', (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    database.collection(COLLECTION_PLAY_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"musicas" : req.body.musicas} }, (err) => {
+    database.collection(COLLECTION_PLAY_USERS).updateOne({ _id: ObjectId(id) }, { $push: {musicas : req.body} }, (err) => {
+      if (err) throw err
+      res.send(req.body);
+    });
+  });
+});
+
+
+server.put('/playlistsDeUsuarios/delete/:id', (req, res) => {
+  const {id} = req.params
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection(COLLECTION_PLAY_USERS).updateOne({ _id: ObjectId(id) }, { $pull: {musicas : {idDaMusica: req.body.idDaMusica}} }, (err) => {
       if (err) throw err
       res.send();
     });
