@@ -61,7 +61,7 @@ server.put('/users/:id', (req, res) => {
   mongoClient.connect(MONGO_HOST, (err, client) => {
     if (err) throw err
     const database = client.db(MONGO_DB);
-    database.collection(COLLECTION_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"nome" : req.body.usuario , 
+    database.collection(COLLECTION_USERS).updateOne({ _id: ObjectId(id) }, { $set: {"nome" : req.body.nome , 
                                                                                     "email" : req.body.email ,
                                                                                     "senha" : req.body.senha} }, (err) => {
       if (err) throw err
@@ -153,6 +153,39 @@ server.get('/todasAsMusicas/:busca', (req,res)=>{
       for(let i=0;i<result.length;i++){
               if(result[i].nome.toLowerCase().indexOf(busca.toLowerCase())>-1){
                   array.push(result[i])
+              }
+              else if(result[i].artista.toLowerCase().indexOf(busca.toLowerCase())>-1){
+                array.push(result[i])
+            }
+          }
+      if (err) throw err
+      res.send(array);
+    });
+  });
+});
+
+
+server.get('/todasAsMusicas/:playUser/:busca', (req,res)=>{
+  let array = []
+  const busca = req.params.busca
+  const id = req.params.playUser
+  let arrayDeIds = [];
+  mongoClient.connect(MONGO_HOST, (err, client) => {
+    if (err) throw err
+    const database = client.db(MONGO_DB);
+    database.collection(COLLECTION_PLAY_USERS).findOne({ _id: ObjectId(id) }, (err, result2) => {
+      for(let j=0; j<result2.musicas.length; j++){
+        arrayDeIds.push(result2.musicas[j].idDaMusica)
+      }
+      if (err) throw err
+    });
+    database.collection(COLLECTION_MUSICAS).find().toArray((err, result) => {
+      for(let i=0;i<result.length;i++){
+              if(arrayDeIds.includes(result[i]._id.toString())){
+                
+              }
+              else if(result[i].nome.toLowerCase().indexOf(busca.toLowerCase())>-1){
+                array.push(result[i])
               }
               else if(result[i].artista.toLowerCase().indexOf(busca.toLowerCase())>-1){
                 array.push(result[i])
